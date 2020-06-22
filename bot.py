@@ -54,7 +54,7 @@ def LikeAndRT():
 
 
 #Followback
-'''def myfollower():
+'''def Followback():
     for follower in tweepy.Cursor(api.followers).items():
         time.sleep(5)
         if not follower.following:
