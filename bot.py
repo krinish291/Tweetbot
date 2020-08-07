@@ -31,7 +31,7 @@ def store_last_seen(FILE_NAME,last_seen_id):
 
 #Search and like
 
-'''search="unsubscribetseries"
+'''search="#xyz"
 nr=100
 for tweet in tweepy.Cursor(api.search,search).items(nr):
     try:
@@ -53,13 +53,22 @@ def LikeAndRT():
             store_last_seen(FILE_NAME,tweet.id)
 
 
+def limit_handled(cursor):
+    while True:
+        try:
+            yield cursor.next()
+        except StopIteration:
+            time.sleep(15 * 60)
+        except tweepy.RateLimitError:
+            time.sleep(15 * 60)
+
 #Followback
-'''def Followback():
-    for follower in tweepy.Cursor(api.followers).items():
-        time.sleep(5)
+def Followback():
+    for follower in limit_handled(tweepy.Cursor(api.followers).items()):        
         if not follower.following:
-            follower.follow()            
-            print (follower.screen_name)'''
+            if follower.friends_count < 300:
+                follower.follow()
+                print (follower.screen_name)
 
 while True:
     LikeAndRT()
